@@ -36,7 +36,7 @@ class TCPPacket(object):
     
 
     def checksum():
-        array = [1,2,3,4,5,6,7] #self.parse()
+        packetArray = [1,2,3,4,5,6,7] #self.parse()
         #byteArrayOfPacket = bytearray([1,2,3,4,5,6,7]) #might not be needed, gotta check later
         #print(byteArrayOfPacket)
         length = len(array)
@@ -47,11 +47,11 @@ class TCPPacket(object):
         #Checksum XOR per two bytes
         i=0
         while i< packetLengthFilledTwoBytes:
-            tempChecksum = tempChecksum ^ ((int_values[i*2]<<8) + int_values[i*2+1])
+            tempChecksum = tempChecksum ^ ((packetArray[i*2]<<8) + packetArray[i*2+1])
             print("i: " + str(i) + " | " + "buffer: " + str(tempChecksum) + "buffer in binary: " + str(bin(tempChecksum)))
             i+=1
         if (packetLengthNotFilledTwoBytes >0):
-            tempChecksum = tempChecksum ^ int_values[i*2]
+            tempChecksum = tempChecksum ^ packetArray[i*2]
         checksum = tempChecksum
         print(checksum)
 
