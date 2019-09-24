@@ -36,7 +36,7 @@ class TCPPacket(object):
     
 
     def checksum():
-        packetArray = [1,2,3,4,5,6,7] #self.parse()
+        packetArray = self.parsePacketInByteArrays() #1,2,3,4,5,6,7]
         #byteArrayOfPacket = bytearray([1,2,3,4,5,6,7]) #might not be needed, gotta check later
         #print(byteArrayOfPacket)
         length = len(array)
@@ -54,6 +54,27 @@ class TCPPacket(object):
             tempChecksum = tempChecksum ^ packetArray[i*2]
         checksum = tempChecksum
         print(checksum)
+
+    def parsePacketInByteArrays():
+        data_type = 1
+        data_id = 2
+        sequence_number = 1
+        length = 7
+        checksum = 1799
+        data = bytes(1)
+        packetInByteArraysWithoutData = bytearray(7) #will include Packet Type, Id, Sequence Number, Length & Checksum, divided every 8 bits
+                                                                            # Packet Structure
+                                                                            # 8 bits
+        packetInByteArraysWithoutData[0] = packetType + (packetId << 4)     # Packet type + packet id
+        packetInByteArraysWithoutData[1] = packetSequenceNumber >> 8             # Packet Sequence Number
+        packetInByteArraysWithoutData[2] = packetSequenceNumber & (8-1)          # Packet Sequence Number next 8 bytes
+        packetInByteArraysWithoutData[3] = packetLength >> 8                      # Packet Length
+        packetInByteArraysWithoutData[4] = packetLength & (8-1)
+        packetInByteArraysWithoutData[5] = packetChecksum >> 8                    # Packet Checksum
+        packetInByteArraysWithoutData[6] = packetChecksum & (8-1)
+
+        packetInByteArrays = packetInByteArraysWithoutData + data #Append data
+        return packetInByteArrays
 
 if __name__ == "__main__":
     main()
