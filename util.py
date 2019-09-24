@@ -35,15 +35,15 @@ class TCPPacket(object):
             self.data = "" # 32 KB/ 32768 byte 2^16/2
     
 
-    def checksum():
+    def generateChecksum(self):
         packetArray = self.parsePacketInByteArrays() #1,2,3,4,5,6,7]
         #byteArrayOfPacket = bytearray([1,2,3,4,5,6,7]) #might not be needed, gotta check later
         #print(byteArrayOfPacket)
         length = len(array)
         tempChecksum = 0
         #int_values = [x for x in array]
-        packetLengthFilledTwoBytes =len(array) >> 1 
-        packetLengthNotFilledTwoBytes = len(array) ^ 1
+        packetLengthFilledTwoBytes = len(packetArray) >> 1 
+        packetLengthNotFilledTwoBytes = len(packetArray) ^ 1
         #Checksum XOR per two bytes
         i=0
         while i< packetLengthFilledTwoBytes:
@@ -54,6 +54,7 @@ class TCPPacket(object):
             tempChecksum = tempChecksum ^ packetArray[i*2]
         checksum = tempChecksum
         print(checksum)
+        return checksum
 
     def parsePacketInByteArrays():
         data_type = 1
@@ -75,6 +76,24 @@ class TCPPacket(object):
 
         packetInByteArrays = packetInByteArraysWithoutData + data #Append data
         return packetInByteArrays
+
+    def isGeneratedChecksumEqualToActualChecksum(self):
+        temp = self.checksum #preserve checksum
+        self.checksum = 0 #initialize checksum
+        self.checksum = generateChecksum(self) #generate checksum
+
+        generatedChecksumEqualToActualChecksum = (self.checksum == temp) #check if generated checksum is equal to actual checksum
+        self.checksum = temp #deinitialize checksum
+        return generatedChecksumEqualToActualChecksum
+
+    #temp function, might erase later
+    def packetDataofPacket(self, packetId, data_type, packetSequenceNumber, packetParsedData):
+        self.packetType = packetType
+        self.packetId = packetId
+        self.packetSequenceNumber = packetSequenceNumber
+        self.packetLength = len(packetParsedData)
+        self.packetData = packetParsedData
+        self.packetChecksum = 0
 
 if __name__ == "__main__":
     main()
